@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FOSSIL HONEY</title>
+<meta name="description" content="fossil honey — small-batch skincare.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent: 26,26,26;
+    --text: 26,26,26;
+    /* Revert overall page background to the original light tone */
+    --bg: 240,240,240;
+    --card-bg: 255,255,255;
+    --btn-bg: 26,26,26;
+    --btn-text: 255,255,255;
+    --btn-bg-2: 240,196,23;
+    --btn-text-2: 26,26,26;
+    --announce-bg: 225,178,81;
+    --star: 255,183,74;
+    --sale-bg: 248,58,58;
+    --border: 26,26,26;
+    --rounded-block: 24px;
+    --rounded-btn: 60px;
+    --rounded-input: 8px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:rgb(var(--bg));
+    color:rgb(var(--text));
+    font-family:'Barlow', sans-serif;
+    font-weight:400;
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%; display:block;}
+  a{color:inherit; text-decoration:none;}
+  ul{list-style:none;}
+  button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+  .wrap{max-width:1320px; margin:0 auto; padding:0 24px;}
+  h1,h2,h3{ font-family:'Barlow',sans-serif; font-weight:700; letter-spacing:-0.01em; line-height:1.05; }
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:16px 34px;
+    border-radius:var(--rounded-btn);
+    font-weight:700; font-size:14px; letter-spacing:.01em;
+    transition:opacity .2s ease, transform .15s ease;
+  }
+  .btn:hover{ opacity:.85; }
+  .btn-primary{ background:rgb(var(--btn-bg)); color:rgb(var(--btn-text)); }
+  .btn-outline{ border:1.5px solid rgb(var(--text)); color:rgb(var(--text)); }
+  .btn-outline:hover{ background:rgb(var(--text)); color:rgb(var(--bg)); }
+ 
+  /* ---------- Announcement bar ---------- */
+  .announce{
+    background:rgb(var(--announce-bg));
+    font-weight:700; font-size:13px; letter-spacing:.01em;
+    padding:14px 0; overflow:hidden; white-space:nowrap;
+  }
+  .announce__track{ display:inline-flex; animation:scroll 15s linear infinite; }
+  .announce__track span{ display:inline-flex; align-items:center; gap:20px; padding:0 24px; }
+  .announce__track span::after{ content:'●'; font-size:5px; opacity:.6; margin-left:14px; }
+  @keyframes scroll{ from{transform:translateX(0);} to{transform:translateX(-40%);} }
+ 
+  /* ---------- Header ---------- */
+  header{ position:sticky; top:0; z-index:50; background:rgb(var(--bg)); }
+  .header-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px 24px;
+  }
+  .logo{ font-size:28px; font-weight:700; margin-right:auto; letter-spacing:-0.02em; }
+  .logo-link{ display:inline-block; color:inherit; }
+  nav.main-nav{ display:none; gap:36px; margin:0 auto; }
+  nav.main-nav a{ font-weight:700; font-size:17px; }
+  .icon-list{ display:flex; align-items:center; gap:22px; }
+  .icon-btn{ position:relative; display:flex; transform:scale(1.05); }
+  .cart-count{
+    position:absolute; top:-6px; right:-8px;
+    background:rgb(var(--text)); color:rgb(var(--bg));
+    font-size:10px; font-weight:700;
+    width:16px; height:16px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+  }
+  @media(min-width:900px){ nav.main-nav{ display:flex; } }
+ 
+  /* ---------- Hero slideshow ---------- */
+  .hero{ position:relative; min-height:82vh; overflow:hidden; }
+  .hero__slide{
+    position:absolute; inset:0;
+    display:flex; align-items:flex-end; justify-content:center;
+    opacity:0; transition:opacity .6s ease;
+    padding-bottom:70px;
+  }
+  .hero__slide.active{ opacity:1; }
+  .hero__slide .bg{
+    position:absolute; inset:0;
+  }
+  .hero__slide .bg img,
+  .banner .bg img,
+  .card__figure img{
+    width:100%; height:100%; object-fit:cover; display:block;
+  }
+  .hero__slide .overlay{
+    position:relative; text-align:center; color:#fff;
+    text-shadow:0 2px 18px rgba(243, 239, 239, 0.35);
+  }
+  .hero__slide .eyebrow{ font-weight:700; font-size:13px; letter-spacing:.08em; text-transform:uppercase; opacity:.9; }
+  .hero__slide h1{ font-size:clamp(2.2rem,5vw,3.6rem); margin:10px 0 0; }
+ 
+  .numbered-dots{
+    position:absolute; bottom:24px; left:50%; transform:translateX(-50%);
+    display:flex; gap:14px; z-index:5;
+  }
+  .numbered-dots button{
+    width:32px; height:32px; border-radius:50%;
+    border:1.5px solid rgba(255,255,255,.55);
+    color:#fff; font-size:12px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+    transition:border-color .2s ease;
+  }
+  .numbered-dots button[aria-current="true"]{ border-color:#fff; background:rgba(255,255,255,.18); }
+ 
+  /* ---------- Scrolling giant text ---------- */
+  /* Make the BLOOM strip match the overall page background and keep dark text for contrast */
+  .scrolling-text{ background:rgb(var(--bg)); color:rgb(var(--text)); overflow:hidden; padding:22px 0; margin-top:16px; }
+  .scrolling-text__track{ display:inline-flex; white-space:nowrap; animation:scroll 14s linear infinite; }
+  .scrolling-text__track span{
+    font-size:clamp(3.5rem,11vw,7rem); font-weight:700; padding:0 40px; letter-spacing:-0.02em;
+  }
+ 
+  /* ---------- Section ---------- */
+  .section{ padding:72px 0; }
+  .section-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:34px; gap:20px; flex-wrap:wrap; }
+  .section-head h2{ font-size:clamp(1.7rem,3vw,2.2rem); }
+  .view-all{ display:flex; align-items:center; gap:6px; font-weight:700; font-size:14px; border-bottom:1.5px solid rgb(var(--text)); padding-bottom:2px; }
+ 
+  /* ---------- Product grid ---------- */
+  .grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:24px; }
+  @media(min-width:700px){ .grid{ grid-template-columns:repeat(4,1fr); } }
+  .card{
+    background:rgb(var(--card-bg)); border-radius:var(--rounded-block);
+    overflow:hidden; display:flex; flex-direction:column;
+    transition:box-shadow .25s ease;
+  }
+  .card:hover{ box-shadow:0 12px 30px rgba(26,26,26,.10); }
+  .card__figure{ position:relative; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .card__figure img{ position:absolute; inset:0; }
+  .card__badge{
+    position:absolute; top:12px; left:12px;
+    background:rgb(var(--sale-bg)); color:#fff;
+    font-size:11px; font-weight:700; padding:5px 10px; border-radius:20px;
+  }
+  .card__body{ padding:16px 16px 20px; display:flex; flex-direction:column; gap:10px; flex:1; }
+  .card__title-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+  .card__title{ font-weight:700; font-size:14px; line-height:1.3; flex:1; }
+  .card__rating{ display:flex; align-items:center; gap:5px; font-size:13px; margin-left:auto; white-space:nowrap; }
+  .stars{ color:rgb(var(--star)); font-size:15px; letter-spacing:1px; }
+  .card__price{ margin-top:auto; display:flex; align-items:baseline; gap:8px; font-weight:700; font-size:15px; }
+  .card__price .was{ text-decoration:line-through; opacity:.5; font-weight:400; font-size:13px; }
+  .quick-add{
+    position:absolute; right:12px; bottom:12px; z-index:2;
+    opacity:0; transform:translateY(8px); pointer-events:none;
+    font-weight:700; font-size:12px;
+    border:1.5px solid rgb(var(--text)); padding:9px 18px; border-radius:var(--rounded-btn);
+    background:rgba(255,255,255,.95); color:rgb(var(--text));
+    transition:opacity .2s ease, transform .2s ease, background .2s ease, color .2s ease;
+  }
+  .card:hover .quick-add, .card:focus-within .quick-add{ opacity:1; transform:translateY(0); pointer-events:auto; }
+  .quick-add:hover{ background:rgb(var(--text)); color:#fff; }
+ 
+  /* ---------- Image banner ---------- */
+  .reel-section{
+    padding:12px 0 0;
+  }
+  .reel-header{
+    text-align:center;
+    margin-bottom:20px;
+  }
+  .reel-heading{
+    font-size:clamp(1.45rem,2.6vw,1.9rem);
+    line-height:1.15;
+    margin-bottom:6px;
+  }
+  .reel-subtext{
+    font-size:14px;
+    opacity:.75;
+    max-width:680px;
+    margin:0 auto;
+  }
+  .reel-grid{
+    display:grid;
+    grid-template-columns:repeat(4, minmax(0, 1fr));
+    gap:16px;
+  }
+  .reel-item{
+    background:rgb(var(--card-bg));
+    border-radius:var(--rounded-block);
+    overflow:hidden;
+    box-shadow:0 10px 24px rgba(26,26,26,.08);
+  }
+  .reel-item__video{
+    aspect-ratio:9/16;
+    background:#111;
+  }
+  .reel-item__video video{
+    width:100%; height:100%; object-fit:cover; display:block;
+  }
+  @media(max-width:900px){
+    .reel-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); }
+  }
+  @media(max-width:640px){
+    .reel-grid{ grid-template-columns:1fr; }
+  }
+
+  .banner{
+    position:relative; min-height:44vh;
+    display:flex; align-items:center; justify-content:center; text-align:center;
+    color:#fff; overflow:hidden;
+    margin-top:100px;
+  }
+  .banner .bg{ position:absolute; inset:0; }
+  .banner__content{ position:relative; z-index:2; padding:0 24px; text-shadow:0 2px 16px rgba(0,0,0,.35); }
+  .banner__content h2{ font-size:clamp(1.9rem,4vw,3rem); }
+ 
+  /* ---------- FAQ ---------- */
+  .faq-wrap{ display:grid; grid-template-columns:1fr; gap:36px; }
+  @media(min-width:900px){ .faq-wrap{ grid-template-columns:0.85fr 1.4fr; } }
+  .faq-support{ margin-top:20px; font-size:14px; }
+  .faq-support .phone{ opacity:.6; display:block; margin-top:4px; }
+  .accordion-box{ background:rgb(var(--card-bg)); border-radius:var(--rounded-block); overflow:hidden; }
+  .accordion-item{ border-bottom:1px solid rgba(26,26,26,.1); }
+  .accordion-item:last-child{ border-bottom:none; }
+  .accordion-item summary{
+    list-style:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 22px; font-weight:700;
+  }
+  .accordion-item summary::-webkit-details-marker{ display:none; }
+  .accordion-item .chev{ transition:transform .2s ease; font-size:12px; }
+  .accordion-item[open] .chev{ transform:rotate(180deg); }
+  .accordion-item .panel{ padding:0 22px 20px; font-size:14px; opacity:.75; max-width:640px; }
+ 
+  /* ---------- Text-with-icons strip ---------- */
+  .perks{ display:grid; grid-template-columns:1fr; gap:26px; text-align:center; padding:50px 0; }
+  @media(min-width:800px){ .perks{ grid-template-columns:repeat(3,1fr); } }
+  .perks div p:first-child{ font-weight:700; margin-bottom:2px; }
+  .perks div p{ font-size:13px; opacity:.75; }
+  .perks svg{ margin:0 auto 10px; }
+ 
+  /* ---------- Newsletter footer ---------- */
+  footer{ background:rgb(var(--card-bg)); padding:60px 0 30px; }
+  .footer-grid{ display:grid; grid-template-columns:1fr; gap:36px; }
+  @media(min-width:800px){ .footer-grid{ grid-template-columns:1fr 1fr 1fr 1.3fr; } }
+  .footer-grid h4{ font-weight:700; font-size:14px; margin-bottom:14px; }
+  .footer-grid li{ margin-bottom:9px; font-size:14px; opacity:.75; }
+  .footer-grid li a:hover{ opacity:1; }
+  .newsletter-form{ display:flex; border-bottom:1.5px solid rgb(var(--text)); max-width:340px; margin-top:8px; }
+  .newsletter-form input{
+    flex:1; border:none; background:none; padding:10px 4px; font-family:inherit; font-size:14px;
+  }
+  .newsletter-form button{ font-weight:700; font-size:16px; padding:10px 4px; }
+  .footer-bottom{
+    margin-top:44px; padding-top:18px; border-top:1px solid rgba(26,26,26,.1);
+    font-size:12px; opacity:.6;
+  }
+ 
+  @media(max-width:640px){
+    .section{ padding:52px 0; }
+    .hero{ min-height:74vh; }
+  }
+</style>
+</head>
+<body>
+ 
+<!-- Announcement bar -->
+<div class="announce">
+  <div class="announce__track">
+    <span>FREE SHIPPING ABOVE ₹650</span>
+    <span>CUSTOM GIFT COMBOS AVAILABLE</span>
+    <span>100% RAW & UNHEATED</span>
+    <span>NO ADDED SUGAR</span>
+    <span>MULTI ORGIN HONEY</span>
+    
+  </div>
+</div>
+ 
+<!-- Header -->
+<header>
+  <div class="header-row wrap">
+    <a href="index.html" class="logo-link"><div class="logo">FOSSIL HONEY</div></a>
+    <nav class="main-nav">
+      <a href="all-products.html">All Products</a>
+      <a href="beauty-products.html">Beauty</a>
+      <a href="honey-products.html">Honey</a>
+      <a href="gift-products.html">Gifting & combos</a>
+    </nav>
+    <div class="icon-list">
+      <button class="icon-btn" aria-label="Search">
+        <svg width="19" height="19" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="10" r="7" stroke="currentColor" stroke-width="1.8"/><path d="m16 15 3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <button class="icon-btn" aria-label="Account">
+        <svg width="20" height="20" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 19c1.4-3 4.2-5 7.5-5s6.1 2 7.5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <button class="icon-btn" aria-label="Cart" id="cartBtn">
+        <svg width="19" height="19" viewBox="0 0 22 22" fill="none"><path d="M11 7H3.6a2 2 0 0 0-1.94 2.5l2.05 8A2 2 0 0 0 5.63 19h10.74a2 2 0 0 0 1.94-1.5l2.05-8A2 2 0 0 0 18.42 7H11Zm0 0V1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+ 
+<!-- Hero slideshow -->
+<section class="hero" id="hero">
+  <div class="hero__slide active" style="--from:#3a3a3a; --to:#1a1a1a;">
+    <div class="bg" style="background:linear-gradient(160deg,var(--from),var(--to));">
+      <img src="https://pw4kcdn-gvcydfg3b6hng4f7.z02.azurefd.net/media/bonlpgrh/2022_720x480headers_0006_small_bee-honeycomb.jpg?preset=fullWidth360" alt="Skincare product on a soft background">
+    </div>
+    <div class="overlay wrap">
+      <div class="eyebrow">New arrival</div>
+      <h1>The face oil<br>everyone's asking about</h1>
+    </div>
+  </div>
+  <div class="hero__slide" style="--from:#8a6a3a; --to:#3a2c18;">
+    <div class="bg" style="background:linear-gradient(160deg,var(--from),var(--to));">
+      <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1400&q=80" alt="Honey skincare jars in a warm setting">
+    </div>
+    <div class="overlay wrap">
+      <div class="eyebrow">Restocked</div>
+      <h1>Small batch. Big difference.</h1>
+    </div>
+  </div>
+  <div class="hero__slide" style="--from:#4a5a3a; --to:#1e2416;">
+    <div class="bg" style="background:linear-gradient(160deg,var(--from),var(--to));">
+      <img src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=1400&q=80" alt="Natural beauty products arranged for gifting">
+    </div>
+    <div class="overlay wrap">
+      <div class="eyebrow">Gifting</div>
+      <h1>Bundles for everyone on your list</h1>
+    </div>
+  </div>
+  <div class="numbered-dots" id="heroDots"></div>
+</section>
+ 
+<!-- Scrolling text -->
+<div class="scrolling-text">
+  <div class="scrolling-text__track">
+    <span>HONEY</span><span>HONEY</span><span>HONEY</span><span>HONEY</span><span>HONEY</span><span>HONEY</span>
+  </div>
+</div>
+ 
+<!-- Featured collection -->
+<section class="section" id="shop">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Featured collection</h2>
+      <a href="#" class="view-all">View all →</a>
+    </div>
+    <div class="grid" id="productGrid"></div>
+  </div>
+</section>
+
+<!-- Reel / video section -->
+<section class="section reel-section">
+  <div class="wrap">
+    <div class="reel-header">
+      <h3 class="reel-heading">Trusted by many</h3>
+      <p class="reel-subtext">Short moments from our community sharing the glow, comfort, and ritual of fossil honey.</p>
+    </div>
+    <div class="reel-grid">
+      <div class="reel-item">
+        <div class="reel-item__video">
+          <video autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=900&q=80">
+            <source src="videos/reel-1.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <div class="reel-item">
+        <div class="reel-item__video">
+          <video autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=900&q=80">
+            <source src="videos/reel-2.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <div class="reel-item">
+        <div class="reel-item__video">
+          <video autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=900&q=80">
+            <source src="videos/reel-3.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <div class="reel-item">
+        <div class="reel-item__video">
+          <video autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1608571424352-9261a1e1e6d8?auto=format&fit=crop&w=900&q=80">
+            <source src="videos/reel-4.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- Image banner -->
+<section class="banner">
+  <div class="bg" style="background:linear-gradient(160deg,#5a4a34,#241d13);">
+    <img src="https://images.unsplash.com/photo-1608571424352-9261a1e1e6d8?auto=format&fit=crop&w=1600&q=80" alt="Botanical ingredients arranged for skincare">
+  </div>
+  <div class="banner__content">
+    <h2>Made using real, cold-pressed botanicals</h2>
+  </div>
+</section>
+ 
+<!-- FAQ -->
+<section class="section" id="faq">
+  <div class="wrap faq-wrap">
+    <div>
+      <h2>FAQ</h2>
+      <div class="faq-support">
+        Our customer support is available Monday to Friday, 9am–6pm.
+        <span class="phone">Contact: (555) 010-0067</span>
+      </div>
+    </div>
+    <div class="accordion-box">
+      <details class="accordion-item" open>
+        <summary><span>Do you ship overseas?</span><span class="chev">▾</span></summary>
+        <div class="panel">Yes, we ship all over the world. Shipping costs apply and are added at checkout. We run discounts and promotions all year, so stay tuned for exclusive deals.</div>
+      </details>
+      <details class="accordion-item">
+        <summary><span>How long will it take to get my order?</span><span class="chev">▾</span></summary>
+        <div class="panel">Domestic orders take 5–7 business days. Overseas deliveries can take 7–16 days. Delivery details are provided in your confirmation email.</div>
+      </details>
+      <details class="accordion-item">
+        <summary><span>Any question?</span><span class="chev">▾</span></summary>
+        <div class="panel">You can contact us through our contact page — we're happy to help.</div>
+      </details>
+    </div>
+  </div>
+</section>
+ 
+<!-- Perks strip -->
+<div class="wrap">
+  <div class="perks">
+    <div>
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M2.2 5.5a.75.75 0 0 0-.5.67c-.47 4.5-.48 7.2 0 11.7a.79.79 0 0 0 .5.74l9.5 3.7 9.5-3.7a.8.8 0 0 0 .5-.74c.5-4.5.5-7.2 0-11.65a.77.77 0 0 0-.5-.72" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <p>Free shipping</p><p>on orders above $60</p>
+    </div>
+    <div>
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.5" stroke="#1a1a1a" stroke-width="1.6"/><path d="M12 7v5l3 2" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <p>Customer service</p><p>Mon–Fri, 9am–6pm</p>
+    </div>
+    <div>
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="4" y="10" width="16" height="10" rx="2" stroke="#1a1a1a" stroke-width="1.6"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="#1a1a1a" stroke-width="1.6"/></svg>
+      <p>Secure payment</p><p>all info encrypted &amp; safe</p>
+    </div>
+  </div>
+</div>
+ 
+<!-- Footer -->
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h4>Policies</h4>
+        <ul>
+          <li><a href="#">Terms &amp; Conditions</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Return &amp; Refund Policy</a></li>
+          <li><a href="#">Shipping Policy</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Account</h4>
+        <ul>
+          <li><a href="#">Orders</a></li>
+          <li><a href="#">Profile</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Info</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Sign up for stories and offers</h4>
+        <form class="newsletter-form" onsubmit="event.preventDefault(); this.reset(); alert('Subscribed.');">
+          <input type="email" placeholder="E-mail" required>
+          <button type="submit">→</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026, Root &amp; Bloom.</div>
+  </div>
+</footer>
+ 
+<script>
+  // ---- Hero slideshow ----
+  const slideEls = document.querySelectorAll('.hero__slide');
+  const dotsWrap = document.getElementById('heroDots');
+  let slideIndex = 0;
+  slideEls.forEach((_, i) => {
+    const b = document.createElement('button');
+    b.textContent = i + 1;
+    if (i === 0) b.setAttribute('aria-current', 'true');
+    b.addEventListener('click', () => setSlide(i));
+    dotsWrap.appendChild(b);
+  });
+  function setSlide(i) {
+    slideEls[slideIndex].classList.remove('active');
+    dotsWrap.children[slideIndex].removeAttribute('aria-current');
+    slideIndex = i;
+    slideEls[slideIndex].classList.add('active');
+    dotsWrap.children[slideIndex].setAttribute('aria-current', 'true');
+  }
+  setInterval(() => setSlide((slideIndex + 1) % slideEls.length), 5500);
+ 
+  // ---- Product grid ----
+  const products = [
+    { slug: "rose-nettle-face-oil", name: "Rose & Nettle Face Oil", price: 42, was: null, rating: 4.2, reviews: 320, fig: "linear-gradient(150deg,#e9dcc6,#c97a55)", image: "https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=900&q=80" },
+    { slug: "hair-regrowth-oil", name: "Hair Regrowth Oil, 18-in-1", price: 44.7, was: null, rating: 4.7, reviews: 20, fig: "linear-gradient(150deg,#e4d4b8,#a85238)", image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=900&q=80" },
+    { slug: "beetroot-prickly-pear-lip-balm", name: "Beetroot & Prickly Pear Lip Balm", price: 33.6, was: null, rating: 4.6, reviews: 18, fig: "linear-gradient(150deg,#f1e3d8,#e0a57c)", image: "https://images.unsplash.com/photo-1608571424352-9261a1e1e6d8?auto=format&fit=crop&w=900&q=80" },
+    { slug: "papaya-potato-bath-soap", name: "Papaya & Potato Bath Soap", price: 29.9, was: 39.9, rating: 4.4, reviews: 46, fig: "linear-gradient(150deg,#f2e6cc,#c9a46a)", image: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=900&q=80" },
+    { slug: "tomato-soap", name: "Tomato Soap, 125g", price: 15.6, was: null, rating: 3.7, reviews: 23, fig: "linear-gradient(150deg,#ecd6c8,#d97757)", image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=900&q=80" },
+    { slug: "kuppaimeni-soap", name: "Kuppaimeni Soap, 120g", price: 15.6, was: null, rating: 4.5, reviews: 42, fig: "linear-gradient(150deg,#dce3cd,#7c8a5e)", image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=900&q=80" },
+    { slug: "ghee-body-butter", name: "Ghee Body Butter", price: 35.7, was: 39.0, rating: 4.7, reviews: 17, fig: "linear-gradient(150deg,#f2e8d6,#e0a57c)", image: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=900&q=80" },
+    { slug: "under-eye-ghee-cream", name: "Under-Eye Ghee Cream", price: 33.6, was: null, rating: 4.8, reviews: 13, fig: "linear-gradient(150deg,#e9e2cd,#b8945a)", image: "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?auto=format&fit=crop&w=900&q=80" }
+  ];
+  let cartCount = 0;
+  const grid = document.getElementById('productGrid');
+  products.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="card__figure" style="background:${p.fig}">
+        <img src="${p.image}" alt="${p.name}" loading="lazy">
+        ${p.was ? `<span class="card__badge">Save $${(p.was - p.price).toFixed(2)}</span>` : ''}
+        <button class="quick-add" type="button">+ Quick add</button>
+      </div>
+      <div class="card__body">
+        <div class="card__title-row">
+          <div class="card__title">${p.name}</div>
+          <div class="card__rating"><span class="stars">★</span> ${p.rating.toFixed(1)}</div>
+        </div>
+        <div class="card__price">
+          <span>$${p.price.toFixed(2)}</span>
+          ${p.was ? `<span class="was">$${p.was.toFixed(2)}</span>` : ''}
+        </div>
+      </div>`;
+    card.querySelector('.quick-add').addEventListener('click', (event) => {
+      event.stopPropagation();
+      cartCount++;
+      document.getElementById('cartCount').textContent = cartCount;
+    });
+    card.addEventListener('click', () => {
+      window.location.href = `product-details.html?product=${encodeURIComponent(p.slug)}`;
+    });
+    grid.appendChild(card);
+  });
+</script>
+</body>
+</html>
+ 
